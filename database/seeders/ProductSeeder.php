@@ -16,7 +16,7 @@ class ProductSeeder extends Seeder
      */
     public function run()
     {
-        $categories = Category::all();
+        $categories = Category::whereNot('parentid', null)->get();
 
         foreach ($categories as $key => $category) {
             $category_id = $category->id;

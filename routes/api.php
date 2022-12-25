@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ShoppingCartController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
@@ -36,4 +37,9 @@ Route::controller(ShoppingCartController::class)->group(function () {
     Route::patch('/cart/{id}/remove/product/{product_id}', 'removeProduct');
     Route::get('/cart/{shoppingcart}', 'show');
     Route::delete('/cart/{id}', 'destroy');
+});
+
+Route::controller(OrderController::class)->group(function () {
+    Route::post('/order/{user_id}', 'store');
+    Route::get('/orders/{user_id}', 'index');
 });
