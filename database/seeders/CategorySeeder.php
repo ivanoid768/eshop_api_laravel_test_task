@@ -15,6 +15,28 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        Category::factory()->count(10)->create();
+        Category::factory()->count(4)->create();
+
+        $parent_categories = Category::all();
+
+        foreach ($parent_categories as $key => $parent_category) {
+            $parent_id = $parent_category->id;
+
+            $max = 4;
+            for ($c = 1; $c <= $max; $c++) {
+                Category::factory()->withParent($parent_id)->create();
+            }
+        }
+
+        $parent_categories = Category::whereNot('parent_id', null)->get();
+
+        foreach ($parent_categories as $key => $parent_category) {
+            $parent_id = $parent_category->id;
+
+            $max = 4;
+            for ($c = 1; $c <= $max; $c++) {
+                Category::factory()->withParent($parent_id)->create();
+            }
+        }
     }
 }

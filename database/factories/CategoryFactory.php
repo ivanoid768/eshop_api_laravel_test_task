@@ -17,8 +17,16 @@ class CategoryFactory extends Factory
     public function definition()
     {
         return [
-            'name' => 'Category_' . fake()->numberBetween(0, 100),
+            'name' => 'Category_' . fake()->unique()->word(),
             'parent_id' => null
         ];
+    }
+
+    public function withParent($parent_id)
+    {
+        return $this->state([
+            'name' => 'Category_' . fake()->unique()->word(),
+            'parent_id' => $parent_id
+        ]);
     }
 }
