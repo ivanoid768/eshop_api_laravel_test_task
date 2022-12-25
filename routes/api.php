@@ -24,7 +24,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::controller(ProductController::class)->group(function () {
     Route::get('/products', 'getProducts');
-    // Route::post('/product', 'store');
+    Route::get('/products/{slug}', 'getProductsBySlug');
 });
 
 Route::controller(UserController::class)->group(function () {

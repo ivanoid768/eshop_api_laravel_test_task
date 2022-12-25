@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Product;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class ProductSeeder extends Seeder
@@ -16,7 +15,7 @@ class ProductSeeder extends Seeder
      */
     public function run()
     {
-        $categories = Category::whereNot('parentid', null)->get();
+        $categories = Category::whereNot('parent_id', null)->get();
 
         foreach ($categories as $key => $category) {
             $category_id = $category->id;

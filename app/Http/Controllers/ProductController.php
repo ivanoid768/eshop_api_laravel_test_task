@@ -87,6 +87,13 @@ class ProductController extends Controller
         ], 200);
     }
 
+    public function getProductsBySlug($slug)
+    {
+        $products = Product::where('slug', $slug)->get();
+
+        return response()->json($products, 200);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
