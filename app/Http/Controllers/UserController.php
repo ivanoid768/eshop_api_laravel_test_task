@@ -2,25 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use App\Http\Controllers\Controller;
 use App\Models\ShoppingCart;
 use App\Models\User;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class CategoryController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index($parent_id)
+    public function index()
     {
-        //
-        $categories = Category::where('parent_id', $parent_id)->get();
+        $users = User::all();
 
-        return response()->json($categories, 200);
+        return response()->json($users, 200);
     }
 
     /**
@@ -31,16 +29,25 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $input = $request->post();
+
+        $user = User::create($input);
+        $cart = new ShoppingCart();
+        $user->shoppingCart()->save($cart);
+
+        return response()->json([
+            'user' => $user,
+            'cart' => $cart
+        ], 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Category  $category
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function show(Category $category)
+    public function show(User $user)
     {
         //
     }
@@ -49,10 +56,10 @@ class CategoryController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Category  $category
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, User $user)
     {
         //
     }
@@ -60,10 +67,10 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Category  $category
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
+    public function destroy(User $user)
     {
         //
     }
