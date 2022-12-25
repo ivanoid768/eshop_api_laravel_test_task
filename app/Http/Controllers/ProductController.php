@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 use Validator;
 
 class ProductController extends Controller
@@ -14,9 +16,25 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $filter = $request->query();
+
+        $validatedData = $request->validate([
+            'page' => ['numeric', 'min:0'],
+            'perpage' => ['numeric', 'min:0'],
+
+            'sortby' => [Rule::in(['name', 'description', 'categoryid', 'price']), 'nullable'],
+
+            "name" => ['string', 'max:255', 'nullable'],
+            "description" => ['string', 'nullable'],
+            // "slug" => ['uuid','nullable'],
+            "categoryid" => ['numeric', 'nullable', 'exists:categories,id'],
+            "price" => ['integer', 'nullable', 'min:1'],
+            "length" => ['integer', 'nullable', 'min:1'],
+            "width" => ['integer', 'nullable', 'min:1'],
+            "weight" => ['integer', 'nullable', 'min:1']
+        ]);
     }
 
     /**
@@ -29,16 +47,17 @@ class ProductController extends Controller
     {
         //
         $input = $request->all();
-   
+
         $validator = Validator::make($input, [
             'name' => 'required',
             'description' => 'required'
         ]);
-   
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
-        };
-   
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+        ;
+
         $product = Product::create($input);
 
         return response()->json([
