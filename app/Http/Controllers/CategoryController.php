@@ -16,7 +16,7 @@ class CategoryController extends Controller
     public function index($parent_id)
     {
         //
-        $categories = Category::query()->where('parent_id', $parent_id);
+        $categories = Category::where('parent_id', $parent_id)->get();
 
         return response()->json($categories, 200);
     }
