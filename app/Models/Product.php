@@ -24,4 +24,9 @@ class Product extends Model
         "width",
         "weight"
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'categoryid');
+    }
 }

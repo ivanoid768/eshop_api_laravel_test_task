@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -44,7 +45,8 @@ class ProductController extends Controller
             $query = $query->whereFullText('description', $validatedData['description']);
         }
         if (array_key_exists('categoryid', $validatedData)) {
-            $query = $query->where('categoryid', $validatedData['categoryid']);
+            $category = Category::query()->find($validatedData['categoryid']);
+            $query = $query->belongsTo($category);
         }
         if (array_key_exists('pricefrom', $validatedData)) {
             $query = $query->where('price', '>=', $validatedData['pricefrom']);
