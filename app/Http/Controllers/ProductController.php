@@ -6,7 +6,6 @@ use App\Models\Product;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 use Validator;
 
 class ProductController extends Controller
@@ -14,27 +13,76 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index(Request $request)
+    public function getProducts(Request $request)
     {
-        $filter = $request->query();
-
         $validatedData = $request->validate([
             'page' => ['numeric', 'min:0'],
             'perpage' => ['numeric', 'min:0'],
 
             'sortby' => [Rule::in(['name', 'description', 'categoryid', 'price']), 'nullable'],
+            'sortdirect' => [Rule::in(['asc', 'desc']), 'nullable'],
 
             "name" => ['string', 'max:255', 'nullable'],
             "description" => ['string', 'nullable'],
             // "slug" => ['uuid','nullable'],
             "categoryid" => ['numeric', 'nullable', 'exists:categories,id'],
-            "price" => ['integer', 'nullable', 'min:1'],
+            "pricefrom" => ['integer', 'nullable', 'min:1'],
+            "priceto" => ['integer', 'nullable', 'min:1'],
             "length" => ['integer', 'nullable', 'min:1'],
             "width" => ['integer', 'nullable', 'min:1'],
             "weight" => ['integer', 'nullable', 'min:1']
         ]);
+
+        $query = Product::query();
+
+        if (array_key_exists('name', $validatedData)) {
+            $query = $query->whereFullText('name', $validatedData['name']);
+        }
+        if (array_key_exists('description', $validatedData)) {
+            $query = $query->whereFullText('description', $validatedData['description']);
+        }
+        if (array_key_exists('categoryid', $validatedData)) {
+            $query = $query->where('categoryid', $validatedData['categoryid']);
+        }
+        if (array_key_exists('pricefrom', $validatedData)) {
+            $query = $query->where('price', '>=', $validatedData['pricefrom']);
+        }
+        if (array_key_exists('priceto', $validatedData)) {
+            $query = $query->where('price', '<=', $validatedData['priceto']);
+        }
+
+        if (array_key_exists('sortby', $validatedData)) {
+            $direction = 'asc';
+            if (array_key_exists('sortdirect', $validatedData)) {
+                $direction = $validatedData['sortdirect'];
+            }
+
+            $query = $query->orderBy($validatedData['sortby'], $direction);
+        } else {
+            $query = $query->orderBy('id');
+        }
+
+        $count = $query->count();
+
+        $page = 1;
+        $per_page = 10;
+        if (array_key_exists('page', $validatedData)) {
+            $page = $validatedData['page'];
+        }
+        if (array_key_exists('perpage', $validatedData)) {
+            $per_page = $validatedData['perpage'];
+        }
+
+        $query = $query->offset(($page - 1) * $per_page)->limit($per_page);
+        $products = $query->get();
+
+        return response()->json([
+            'data' => $products,
+            'size' => $products->count(),
+            'total' => $count
+        ], 200);
     }
 
     /**
