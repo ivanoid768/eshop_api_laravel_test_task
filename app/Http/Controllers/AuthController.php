@@ -48,7 +48,7 @@ class AuthController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'User Created Successfully',
-                'token' => $user->createToken("API TOKEN")->plainTextToken
+                'token' => $user->createToken("API TOKEN", ['guest', 'user'])->plainTextToken
             ], 200);
 
         } catch (\Throwable $th) {
@@ -95,7 +95,7 @@ class AuthController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'User Logged In Successfully',
-                'token' => $user->createToken("API TOKEN")->plainTextToken
+                'token' => $user->createToken("API TOKEN", ['guest', 'user'])->plainTextToken
             ], 200);
 
         } catch (\Throwable $th) {
@@ -126,7 +126,48 @@ class AuthController extends Controller
                 'guest' => $user,
                 'status' => true,
                 'message' => 'Guest Created Successfully',
-                'token' => $user->createToken("GUEST API TOKEN")->plainTextToken
+                'token' => $user->createToken("GUEST API TOKEN", ['guest'])->plainTextToken
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function createUserFromGuest(Request $request)
+    {
+        try {
+            //Validated
+            $validateUser = Validator::make(
+                $request->all(),
+                [
+                    'name' => 'required',
+                    'email' => 'required|email|unique:users,email',
+                    'password' => 'required'
+                ]
+            );
+
+            if ($validateUser->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'validation error',
+                    'errors' => $validateUser->errors()
+                ], 401);
+            }
+
+            $user = User::find($request->user()->id);
+
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = Hash::make($request->password);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'User Created Successfully',
+                'token' => $user->createToken("API TOKEN", ['guest', 'user'])->plainTextToken
             ], 200);
 
         } catch (\Throwable $th) {
