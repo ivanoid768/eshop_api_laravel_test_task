@@ -18,7 +18,11 @@ class CategoryController extends Controller
     public function index($parent_id)
     {
         //
-        $categories = Category::where('parent_id', $parent_id)->get();
+        if($parent_id && $parent_id != 'null'){
+            $categories = Category::where('parent_id', $parent_id)->get();
+        }else{
+            $categories = Category::whereNull('parent_id')->get();
+        }
 
         return response()->json($categories, 200);
     }
