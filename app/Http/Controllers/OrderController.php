@@ -14,9 +14,9 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index($user_id)
+    public function index(Request $request)
     {
-        $orders = Order::where('user_id', $user_id)->get();
+        $orders = Order::where('user_id', $request->user()->id)->get();
 
         foreach ($orders as $order) {
             $order->products->toArray();
@@ -31,9 +31,9 @@ class OrderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store($user_id)
+    public function store(Request $request)
     {
-        $user = User::find($user_id);
+        $user = User::find($request->user()->id);
         $cart = $user->shoppingCart()->first();
 
         $order = new Order();

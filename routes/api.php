@@ -59,6 +59,6 @@ Route::controller(ShoppingCartController::class)
 Route::controller(OrderController::class)
     ->middleware(['auth:sanctum', 'abilities:guest,user'])
     ->group(function () {
-        Route::post('/order/{user_id}', 'store');
-        Route::get('/orders/{user_id}', 'index');
+        Route::post('/order', 'store');
+        Route::get('/orders', 'index');
     });
