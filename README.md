@@ -22,4 +22,5 @@
 
 8. `php artisan serve`
 
-9.  Import eshop_postman.json to Postman and run requests to http://localhost:8000/
+9. POST http://127.0.0.1:8000/api/auth/guest to get guest API token
+10. Import eshop_postman.json to Postman and run requests to http://localhost:8000/

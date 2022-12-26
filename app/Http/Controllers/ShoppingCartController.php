@@ -15,13 +15,16 @@ class ShoppingCartController extends Controller
      * @param  \App\Models\ShoppingCart  $shoppingCart
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        $shoppingCart = ShoppingCart::find($id);
+        $user = $request->user();
+
+        $shoppingCart = $user->shoppingCart;
+        $shoppingCart->products;
 
         return response()->json([
             'cart' => $shoppingCart,
-            'cart_products' => $shoppingCart->products()->get()
+            // 'cart_products' => $shoppingCart->products
         ], 200);
     }
 
@@ -32,14 +35,16 @@ class ShoppingCartController extends Controller
      * @param  \App\Models\ShoppingCart  $shoppingCart
      * @return \Illuminate\Http\JsonResponse
      */
-    public function addProduct(Request $request, $id, $product_id)
+    public function addProduct(Request $request, $product_id)
     {
+        $user = $request->user();
+
         $product = Product::find($product_id);
         if(!$product){
             return response()->json(['error'=>'invalid_product_id', 404]);
         }
 
-        $cart = ShoppingCart::find($id);
+        $cart = $user->shoppingCart;
 
         $cart->products()->attach($product);
 
@@ -49,10 +54,12 @@ class ShoppingCartController extends Controller
         ], 201);
     }
 
-    public function removeProduct(Request $request, $id, $product_id)
+    public function removeProduct(Request $request, $product_id)
     {
+        $user = $request->user();
+
         $product = Product::find($product_id);
-        $cart = ShoppingCart::find($id);
+        $cart = $user->shoppingCart;
 
         $cart->products()->detach($product);
 
@@ -68,11 +75,12 @@ class ShoppingCartController extends Controller
      * @param  \App\Models\ShoppingCart  $shoppingCart
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $shoppingCart = ShoppingCart::find($id);
+        $shoppingCart = $request->user()->shoppingCart;;
 
         $shoppingCart->products()->detach();
+        $shoppingCart->products;
 
         return response()->json([
             'cart' => $shoppingCart

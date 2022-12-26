@@ -47,14 +47,18 @@ Route::controller(ProductController::class)->group(function () {
 //     Route::get('/users', 'index');
 // });
 
-Route::controller(ShoppingCartController::class)->group(function () {
-    Route::patch('/cart/{id}/add/product/{product_id}', 'addProduct');
-    Route::patch('/cart/{id}/remove/product/{product_id}', 'removeProduct');
-    Route::get('/cart/{shoppingcart}', 'show');
-    Route::delete('/cart/{id}', 'destroy');
-})->middleware(['auth:sanctum', 'abilities:guest']);
+Route::controller(ShoppingCartController::class)
+    ->middleware(['auth:sanctum'])
+    ->group(function () {
+        Route::patch('/cart/add/product/{product_id}', 'addProduct');
+        Route::patch('/cart/remove/product/{product_id}', 'removeProduct');
+        Route::get('/cart', 'show');
+        Route::delete('/cart', 'destroy');
+    });
 
-Route::controller(OrderController::class)->group(function () {
-    Route::post('/order/{user_id}', 'store');
-    Route::get('/orders/{user_id}', 'index');
-})->middleware(['auth:sanctum', 'abilities:guest,user']);
+Route::controller(OrderController::class)
+    ->middleware(['auth:sanctum', 'abilities:guest,user'])
+    ->group(function () {
+        Route::post('/order/{user_id}', 'store');
+        Route::get('/orders/{user_id}', 'index');
+    });

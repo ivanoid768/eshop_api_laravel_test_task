@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\ShoppingCart;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
@@ -106,7 +107,7 @@ class AuthController extends Controller
         }
     }
 
-        /**
+    /**
      * Create User
      * @param Request $request
      * @return JsonResponse 
@@ -118,9 +119,12 @@ class AuthController extends Controller
 
             $user = User::create([
                 'name' => $guest_name,
-                'email' => $guest_name.'@mail.com',
+                'email' => $guest_name . '@mail.com',
                 'password' => Hash::make(Str::random())
             ]);
+
+            $cart = new ShoppingCart();
+            $user->shoppingCart()->save($cart);
 
             return response()->json([
                 'guest' => $user,
