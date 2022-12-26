@@ -35,7 +35,6 @@ class OrderController extends Controller
     {
         $user = User::find($user_id);
         $cart = $user->shoppingCart()->first();
-        // print_r($cart);
 
         $order = new Order();
         $user->orders()->save($order);
@@ -53,39 +52,5 @@ class OrderController extends Controller
             'new_order' => $order,
             'order_products' => $order->products()->get()
         ], 200);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Order $order)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Order $order)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Order $order)
-    {
-        //
     }
 }

@@ -10,27 +10,6 @@ use Illuminate\Http\Request;
 class ShoppingCartController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param  \App\Models\ShoppingCart  $shoppingCart
@@ -45,19 +24,6 @@ class ShoppingCartController extends Controller
             'cart_products' => $shoppingCart->products()->get()
         ], 200);
     }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\ShoppingCart  $shoppingCart
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, ShoppingCart $shoppingCart)
-    {
-        //
-    }
-
 
     /**
      * Update the specified resource in storage.

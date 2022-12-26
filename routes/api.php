@@ -3,6 +3,7 @@
 use App\Http\Controllers\ShoppingCartController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
@@ -42,4 +43,9 @@ Route::controller(ShoppingCartController::class)->group(function () {
 Route::controller(OrderController::class)->group(function () {
     Route::post('/order/{user_id}', 'store');
     Route::get('/orders/{user_id}', 'index');
+});
+
+Route::controller(AuthController::class)->group(function () {
+    Route::post('/auth/register', 'createUser');
+    Route::post('/auth/login', 'loginUser');
 });
